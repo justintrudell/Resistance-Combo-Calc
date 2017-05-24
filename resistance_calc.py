@@ -10,27 +10,28 @@ def initial_print_statement():
     print("When you're finished inputting all resistances, please type in 'end'.\n")
 
 def resistance_input():
-    resistor_count = 1;
-    overall_list = list()
+    resistor_count = 1
+    overall_list = []
     while True :
-        user_input = input("Resistance %i: " % resistor_count)
+        user_input = str(raw_input("Resistance %i: " % resistor_count))
         resistor_count += 1
-        if str(user_input).lower() == "end":
+        if user_input.lower() == "end":
             break
-        if "," in str(user_input):
+        if "," in user_input:
+            user_input = str(user_input)
             # Assume user typed in colours
-            colors = str(user_input).split(",")
+            colors = user_input.split(",")
             value = 0
             if len(colors) == 3:
                 # 4-Band resistor
                 # TODO: ADD VALIDATION
                 value += (digit_dict.get(colors[0])*10 + digit_dict.get(colors[1]))*multiplier_dict.get(colors[2])
-                overall_list.append(int(value))
+                overall_list.append(value)
                 print("Added %i Ohm resistance!\n" % value)
             elif len(colors) == 4:
                 # 5-Band resistor
                 value += (digit_dict.get(colors[0]) * 100 + digit_dict.get(colors[1]) * 10 + digit_dict.get(colors[2])) * multiplier_dict.get(colors[3])
-                overall_list.append(int(value))
+                overall_list.append(value)
                 print("Added %i Ohm resistance!\n" % value)
             else:
                 print("Invalid number of colors - please try again!")
@@ -46,9 +47,9 @@ def desired_value_input():
 
 def compute_possibilities(desired_val, resist_list):
     print("Computing possible parallel resistance combinations...")
-    result_list = list()
+    result_list = []
     # First check all double-parallel combinations
-    possible_double_combinations = list(itertools.combinations(resist_list, 2))
+    possible_double_combinations = [itertools.combinations(resist_list, 2)]
     for combination in possible_double_combinations:
         value = compute_parallel(combination)
         # If they're approx. equal add to the list
@@ -60,7 +61,7 @@ def compute_possibilities(desired_val, resist_list):
                 if approximately_equal(desired_val, (value + resist), 5):
                     result_list.append([combination, resist])
     # Next, check all triple-parallel combinations
-    possible_combinations = list(itertools.combinations(resist_list, 3))
+    possible_combinations = [itertools.combinations(resist_list, 3)]
     for combination in possible_combinations:
         value = compute_parallel(combination)
         # If they're approx. equal add to the list
